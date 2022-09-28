@@ -2,34 +2,58 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 )
 
 func main() {
-	origin := rand.Perm(10)
-	//origin := []int{5,6,7,4,5,6,8,3,5,8}
-	fmt.Println("origin: ", origin)
-	qsort(origin, 0, len(origin))
-	fmt.Println("q-sort: ", origin)
+	ar := []int{3, 4, 1, 2, 5, 7, -1, 0}
+	Quicksort(ar)
+	fmt.Println(ar)
 }
 
-func qsort(p []int, l, r int) {
-	if r > l {
-		mid := proc(p, l, r)
-		qsort(p, l, mid)
-		qsort(p, mid+1, r)
+func Quicksort(ar []int) {
+	// это условие выхода из функции. Пока длина массива не будет равна 1
+	// функция будет делить массив на части и снова вызывать саму себя (рекурсия)
+	if len(ar) <= 1 {
+		return
 	}
+	// находим следующий индекс элемента, по которому делим массив на 2 части
+	split := partition(ar)
+
+	Quicksort(ar[:split])
+	Quicksort(ar[split:])
 }
 
-func proc(p []int, l, r int) (i int) {
-	v := p[l]
-	i = l
-	for j := i + 1; j < r; j++ {
-		if p[j] < v {
-			i++
-			p[i], p[j] = p[j], p[i]
+func partition(ar []int) int {
+	// находим элемент, относительно которого будем сортировать весь остальной массив.
+	// Все элементы, которые меньше пивота (опорной точки),
+	//должны быть слева, те что больше-справа
+	pivot := ar[len(ar)/2]
+
+	left := 0
+	right := len(ar) - 1
+
+	for {
+		// идем с начала массива и ищем первый элемент,
+		// не удовлетворяющий тому, что он должен быть меньше пивота
+		for ; ar[left] < pivot; left++ {
 		}
+		// идем с конца массива и ищем первый элемент,
+		// не удовлетворяющий тому, что он должен быть больше пивота
+		for ; ar[right] > pivot; right-- {
+		}
+
+		if left >= right {
+			return right
+		}
+		// Если нашли элементы, которые стоят не на своих позициях
+		//(тот элемент, что должен быть справа - находится слева и наоборот)
+		// меняем их местами
+		swap(ar, left, right)
 	}
-	p[i], p[l] = p[l], p[i]
-	return i
+}
+
+func swap(ar []int, i, j int) {
+	tmp := ar[i]
+	ar[i] = ar[j]
+	ar[j] = tmp
 }
